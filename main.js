@@ -1,4 +1,20 @@
-/* ============ Ricardo · 交互 ============ */
+/* ============ Ricardo · 交互 v2 ============ */
+
+/* ---------- 开场动画（同一会话只播一次）---------- */
+(() => {
+  const intro = document.getElementById('intro');
+  const bar = document.getElementById('introBar');
+  const seen = sessionStorage.getItem('xh-intro');
+  if (seen || matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    intro.remove();
+    document.body.classList.add('ready');
+    return;
+  }
+  sessionStorage.setItem('xh-intro', '1');
+  requestAnimationFrame(() => { bar.style.width = '100%'; });
+  setTimeout(() => { intro.classList.add('done'); document.body.classList.add('ready'); }, 1350);
+  setTimeout(() => intro.remove(), 2100);
+})();
 
 /* ---------- 星空粒子背景（鼠标视差 + 流星）---------- */
 (() => {
@@ -14,10 +30,10 @@
     const n = Math.min(220, Math.floor(innerWidth * innerHeight / 9000));
     stars = Array.from({ length: n }, () => ({
       x: Math.random() * W, y: Math.random() * H,
-      z: Math.random() * 0.8 + 0.2,            // 深度：决定视差强度与大小
+      z: Math.random() * 0.8 + 0.2,
       r: (Math.random() * 1.2 + 0.3) * devicePixelRatio,
-      tw: Math.random() * Math.PI * 2,          // 闪烁相位
-      hue: Math.random() < 0.18 ? 272 : (Math.random() < 0.3 ? 213 : 220), // 少量紫/蓝星
+      tw: Math.random() * Math.PI * 2,
+      hue: Math.random() < 0.18 ? 272 : (Math.random() < 0.3 ? 213 : 220),
     }));
   }
   addEventListener('resize', resize);
@@ -37,7 +53,6 @@
       cx.arc(px, py, s.r * s.z, 0, 7);
       cx.fill();
     }
-    // 流星
     if (!shooting && Math.random() < 0.004) {
       shooting = { x: Math.random() * W * 0.7, y: Math.random() * H * 0.35, len: 0, sp: (9 + Math.random() * 7) * devicePixelRatio, ang: Math.PI / 5 + Math.random() * 0.2, life: 1 };
     }
@@ -61,6 +76,44 @@
   resize(); frame();
 })();
 
+/* ---------- 标题逐字拆分 ---------- */
+(() => {
+  const h1 = document.getElementById('heroName');
+  let i = 0;
+  [...h1.childNodes].forEach(node => {
+    if (node.nodeType === Node.TEXT_NODE) {
+      const frag = document.createDocumentFragment();
+      for (const ch of node.textContent) {
+        if (ch.trim() === '') { frag.appendChild(document.createTextNode(ch)); continue; }
+        const s = document.createElement('span');
+        s.className = 'ch';
+        s.textContent = ch;
+        s.style.animationDelay = `${1.05 + i * 0.07}s`;
+        i++;
+        frag.appendChild(s);
+      }
+      node.replaceWith(frag);
+    } else if (node.classList && node.classList.contains('wave')) {
+      node.classList.add('ch');
+      node.style.animationName = 'chIn, wave';
+      node.style.animationDuration = '.75s, 2.4s';
+      node.style.animationDelay = `${1.05 + i * 0.07}s, ${1.5 + i * 0.07}s`;
+      node.style.animationIterationCount = '1, infinite';
+      node.style.animationTimingFunction = 'cubic-bezier(.2,.85,.25,1.1), ease-in-out';
+      i++;
+    }
+  });
+})();
+
+/* ---------- 滚动进度条 ---------- */
+(() => {
+  const el = document.getElementById('progress');
+  addEventListener('scroll', () => {
+    const max = document.documentElement.scrollHeight - innerHeight;
+    el.style.width = `${max > 0 ? (scrollY / max) * 100 : 0}%`;
+  }, { passive: true });
+})();
+
 /* ---------- 打字机 ---------- */
 (() => {
   const el = document.getElementById('typed');
@@ -82,15 +135,23 @@ addEventListener('scroll', () => {
   document.getElementById('nav').classList.toggle('scrolled', scrollY > 30);
 }, { passive: true });
 
-/* ---------- 滚动显现 ---------- */
+/* ---------- 滚动显现（开场结束后启动）---------- */
 (() => {
-  const io = new IntersectionObserver(es => {
-    es.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); io.unobserve(e.target); } });
-  }, { threshold: 0.12 });
-  document.querySelectorAll('.reveal').forEach((el, i) => {
-    el.style.transitionDelay = `${(i % 4) * 90}ms`;
-    io.observe(el);
-  });
+  const start = () => {
+    const io = new IntersectionObserver(es => {
+      es.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); io.unobserve(e.target); } });
+    }, { threshold: 0.12 });
+    document.querySelectorAll('.reveal').forEach((el, i) => {
+      el.style.transitionDelay = `${(i % 4) * 90}ms`;
+      io.observe(el);
+    });
+  };
+  if (document.body.classList.contains('ready')) start();
+  else {
+    const timer = setInterval(() => {
+      if (document.body.classList.contains('ready')) { clearInterval(timer); start(); }
+    }, 120);
+  }
 })();
 
 /* ---------- 项目卡片：3D 倾斜 + 跟随光晕 ---------- */
@@ -104,6 +165,17 @@ document.querySelectorAll('.card').forEach(card => {
     card.style.setProperty('--my', `${(y + 0.5) * 100}%`);
   });
   card.addEventListener('mouseleave', () => { card.style.transform = ''; });
+});
+
+/* ---------- 磁吸元素 ---------- */
+document.querySelectorAll('.magnetic').forEach(el => {
+  el.addEventListener('mousemove', e => {
+    const r = el.getBoundingClientRect();
+    const x = e.clientX - r.left - r.width / 2;
+    const y = e.clientY - r.top - r.height / 2;
+    el.style.transform = `translate(${x * 0.22}px, ${y * 0.32}px)`;
+  });
+  el.addEventListener('mouseleave', () => { el.style.transform = ''; });
 });
 
 /* ---------- 霓虹自定义光标 ---------- */

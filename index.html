@@ -9,11 +9,20 @@
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚡</text></svg>" />
 </head>
 <body>
-  <!-- 背景层 -->
+  <!-- 开场动画 -->
+  <div class="intro" id="intro">
+    <div class="intro-logo">XH<span>.</span></div>
+    <div class="intro-bar"><i id="introBar"></i></div>
+  </div>
+
+  <!-- 全局装饰层 -->
+  <div class="progress" id="progress"></div>
+  <div class="grain"></div>
   <canvas id="stars"></canvas>
   <div class="orb orb-a"></div>
   <div class="orb orb-b"></div>
   <div class="orb orb-c"></div>
+  <div class="orb orb-d"></div>
   <div class="cursor-dot" id="cursorDot"></div>
   <div class="cursor-ring" id="cursorRing"></div>
 
@@ -30,28 +39,45 @@
   <!-- 首屏 -->
   <header class="hero" id="top">
     <p class="hero-hello reveal">你好，我是</p>
-    <h1 class="hero-name reveal">里卡多 <span class="wave">👋</span></h1>
+    <h1 class="hero-name" id="heroName">里卡多 <span class="wave">👋</span></h1>
     <p class="hero-typing reveal"><span id="typed"></span><span class="caret"></span></p>
     <div class="hero-actions reveal">
-      <a class="btn btn-primary" href="#projects">看看我的项目</a>
-      <a class="btn btn-ghost" href="https://github.com/xh0915" target="_blank" rel="noopener">GitHub 主页 ↗</a>
+      <a class="btn btn-primary magnetic" href="#projects">看看我的项目</a>
+      <a class="btn btn-ghost magnetic" href="https://github.com/xh0915" target="_blank" rel="noopener">GitHub 主页 ↗</a>
     </div>
     <div class="scroll-hint reveal"><span></span></div>
   </header>
 
-  <!-- 关于 -->
+  <!-- 跑马灯 -->
+  <div class="marquee reveal" aria-hidden="true">
+    <div class="marquee-track">
+      <span>PYTHON ✦ JAVASCRIPT ✦ TYPESCRIPT ✦ VUE ✦ NODE.JS ✦ DJANGO ✦ FASTAPI ✦ MYSQL ✦ DOCKER ✦ GIT ✦ LINUX ✦ AI PLUGINS ✦&nbsp;</span>
+      <span>PYTHON ✦ JAVASCRIPT ✦ TYPESCRIPT ✦ VUE ✦ NODE.JS ✦ DJANGO ✦ FASTAPI ✦ MYSQL ✦ DOCKER ✦ GIT ✦ LINUX ✦ AI PLUGINS ✦&nbsp;</span>
+    </div>
+  </div>
+
+  <!-- 关于：Bento 宫格 -->
   <section class="section" id="about">
     <h2 class="section-title reveal"><span class="idx">01</span>关于我</h2>
-    <div class="about-grid">
-      <div class="glass about-text reveal">
+    <div class="bento">
+      <div class="bento-card b-big glass reveal">
         <p>一名 <b class="hl">软件开发者</b>，痴迷于 AI 工具与插件开发 —— 目前正在折腾 <b class="hl">DeepSeek Harness</b> 的插件生态。</p>
-        <p>我相信工具应该有趣：比如这条会追着贡献格子跑的蛇，或者一个能直接在网页里玩的贪吃蛇彩蛋。</p>
+        <p>我相信工具应该有趣：会追着贡献格子跑的蛇、会流光的标题、会呼吸的按钮……代码之外，一切都值得打磨。</p>
         <p class="motto">“Building cool stuff with code.”</p>
       </div>
-      <div class="glass about-stack reveal">
+      <div class="bento-card b-stack glass reveal">
         <h3>技术栈</h3>
         <img src="https://skillicons.dev/icons?i=python,javascript,typescript,vue,nodejs,django,fastapi,mysql,docker,git,linux&theme=dark"
              alt="tech stack" loading="lazy" />
+      </div>
+      <div class="bento-card b-mini glass reveal">
+        <i>⚡</i><b>AI 插件开发</b><p>正在构建 Harness 插件生态</p>
+      </div>
+      <div class="bento-card b-mini glass reveal">
+        <i>🎮</i><b>Playful UI</b><p>相信工具应该有趣</p>
+      </div>
+      <div class="bento-card b-mini glass reveal">
+        <i>🌱</i><b>持续学习</b><p>永远在折腾新东西</p>
       </div>
     </div>
   </section>
@@ -83,6 +109,7 @@
 
   <!-- 页脚 -->
   <footer class="footer">
+    <a class="to-top magnetic" href="#top" aria-label="回到顶部">↑</a>
     <img src="https://komarev.com/ghpvc/?username=xh0915&color=blueviolet&label=Visitors" alt="visitors" loading="lazy" />
     <p>© 2026 里卡多 Ricardo · 用代码制造快乐</p>
     <p class="muted">Hosted on GitHub Pages · 源码在 <a href="https://github.com/xh0915/xh0915.github.io" target="_blank" rel="noopener">xh0915.github.io</a></p>
