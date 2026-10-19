@@ -23,6 +23,7 @@ body {
   font-family: "Segoe UI", "Microsoft YaHei", "PingFang SC", system-ui, sans-serif;
   overflow-x: hidden;
   line-height: 1.7;
+  transition: background-color .45s ease, color .45s ease;
 }
 ::selection { background: rgba(163, 113, 247, 0.4); }
 
@@ -166,6 +167,7 @@ body {
 .glass {
   background: var(--bg-soft); border: 1px solid var(--line); border-radius: 18px;
   backdrop-filter: blur(10px); padding: 28px;
+  transition: background .45s, border-color .45s, transform .25s ease, box-shadow .25s;
 }
 
 /* ---------- Bento 宫格 ---------- */
@@ -190,7 +192,7 @@ body {
 .card {
   position: relative; overflow: hidden; text-decoration: none; color: var(--text);
   background: var(--bg-soft); border: 1px solid var(--line); border-radius: 18px; padding: 28px;
-  transition: transform .25s ease, box-shadow .25s;
+  transition: transform .25s ease, box-shadow .25s, background .45s, border-color .45s;
   transform-style: preserve-3d; will-change: transform;
 }
 .card:hover { box-shadow: 0 18px 44px rgba(0, 0, 0, 0.5), 0 0 30px rgba(163, 113, 247, 0.18); }
@@ -232,6 +234,58 @@ body {
 .footer a:not(.to-top) { color: var(--c1); text-decoration: none; }
 .footer a:not(.to-top):hover { text-decoration: underline; }
 .muted { color: #6e7681; font-size: 12.5px; margin-top: 6px; }
+
+/* ---------- 深浅色主题 ---------- */
+[data-theme="light"] {
+  --bg: #f1eff9;
+  --bg-soft: rgba(255, 255, 255, 0.72);
+  --line: rgba(35, 25, 70, 0.1);
+  --text: #242739;
+  --muted: #5b6072;
+  --c1: #1f6feb;
+  --c2: #8250df;
+  --c3: #d6336c;
+}
+[data-theme="light"] .orb { mix-blend-mode: normal; }
+[data-theme="light"] .grain { opacity: .04; }
+[data-theme="light"] .nav.scrolled { background: rgba(241, 239, 249, 0.78); }
+[data-theme="light"] .btn-ghost { border-color: rgba(35, 25, 70, 0.22); }
+[data-theme="light"] .scroll-hint { border-color: rgba(35, 25, 70, 0.28); }
+[data-theme="light"] .hero-name { filter: drop-shadow(0 0 20px rgba(130, 80, 223, 0.25)); }
+[data-theme="light"] ::selection { background: rgba(130, 80, 223, 0.22); }
+
+.theme-btn {
+  width: 38px; height: 38px; border-radius: 50%;
+  border: 1px solid var(--line); background: var(--bg-soft); color: var(--text);
+  display: inline-flex; align-items: center; justify-content: center;
+  position: relative; overflow: hidden;
+  transition: border-color .25s, box-shadow .25s, background .45s, color .45s;
+}
+.theme-btn:hover { border-color: var(--c2); box-shadow: 0 0 14px rgba(163, 113, 247, .4); }
+.theme-btn svg { position: absolute; width: 18px; height: 18px; transition: transform .55s cubic-bezier(.2,.8,.2,1), opacity .4s; }
+.theme-btn .ic-sun { opacity: 0; transform: rotate(-120deg) scale(.3); }
+.theme-btn .ic-moon { opacity: 1; transform: none; }
+[data-theme="light"] .theme-btn .ic-sun { opacity: 1; transform: none; }
+[data-theme="light"] .theme-btn .ic-moon { opacity: 0; transform: rotate(120deg) scale(.3); }
+
+/* ---------- 个人签名档 ---------- */
+.sig { display: flex; flex-direction: column; align-items: center; margin-top: 16px; gap: 4px; }
+.sig-name {
+  font-family: "Segoe Script", "Brush Script MT", "KaiTi", cursive;
+  font-size: clamp(26px, 4.2vw, 36px); font-style: italic; font-weight: 600;
+  background: var(--grad); -webkit-background-clip: text; background-clip: text; color: transparent;
+  opacity: 0; transform: translateY(12px) rotate(-2deg);
+  transition: opacity .9s ease, transform .9s cubic-bezier(.2, .8, .2, 1);
+}
+.sig.drawn .sig-name { opacity: 1; transform: rotate(-2deg); }
+.sig-swash { width: clamp(160px, 26vw, 230px); height: 18px; margin-top: -2px; }
+.sig-swash path {
+  fill: none; stroke: var(--c2); stroke-width: 2.6; stroke-linecap: round;
+  stroke-dasharray: 250; stroke-dashoffset: 250;
+  filter: drop-shadow(0 0 7px rgba(163, 113, 247, .8));
+  transition: stroke-dashoffset 1.15s .4s ease;
+}
+.sig.drawn .sig-swash path { stroke-dashoffset: 0; }
 
 /* ---------- 入场动画 ---------- */
 .reveal { opacity: 0; transform: translateY(28px); transition: opacity .7s ease, transform .7s ease; }

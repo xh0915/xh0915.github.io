@@ -16,11 +16,31 @@
   setTimeout(() => intro.remove(), 2100);
 })();
 
-/* ---------- 星空粒子背景（鼠标视差 + 流星）---------- */
+/* ---------- 深浅色主题切换 ---------- */
+(() => {
+  const root = document.documentElement;
+  document.getElementById('themeBtn').addEventListener('click', () => {
+    const next = root.getAttribute('data-theme') === 'light' ? 'dark' : 'light';
+    root.setAttribute('data-theme', next);
+    localStorage.setItem('xh-theme', next);
+    dispatchEvent(new Event('xh-theme-change'));
+  });
+})();
+
+/* ---------- 个人签名档：揭幕后手写浮现 ---------- */
+(() => {
+  const sig = document.getElementById('sig');
+  const delay = document.body.classList.contains('ready') ? 300 : 2200;
+  setTimeout(() => sig.classList.add('drawn'), delay);
+})();
+
+/* ---------- 星空粒子背景（鼠标视差 + 流星 + 主题感知）---------- */
 (() => {
   const cv = document.getElementById('stars');
   const cx = cv.getContext('2d');
   let W, H, stars = [], shooting = null, mx = 0, my = 0;
+  let light = document.documentElement.getAttribute('data-theme') === 'light';
+  addEventListener('xh-theme-change', () => { light = document.documentElement.getAttribute('data-theme') === 'light'; });
 
   function resize() {
     W = cv.width = innerWidth * devicePixelRatio;
@@ -46,9 +66,9 @@
     for (const s of stars) {
       const px = s.x + mx * 60 * s.z * devicePixelRatio;
       const py = s.y + my * 60 * s.z * devicePixelRatio;
-      const a = 0.35 + Math.abs(Math.sin(s.tw + t * (0.6 + s.z))) * 0.65;
+      const a = (0.35 + Math.abs(Math.sin(s.tw + t * (0.6 + s.z))) * 0.65) * (light ? 0.5 : 1);
       cx.globalAlpha = a * s.z;
-      cx.fillStyle = `hsl(${s.hue} 85% 78%)`;
+      cx.fillStyle = light ? `hsl(252 42% 42%)` : `hsl(${s.hue} 85% 78%)`;
       cx.beginPath();
       cx.arc(px, py, s.r * s.z, 0, 7);
       cx.fill();
@@ -62,8 +82,9 @@
       s.len = Math.min(s.len + s.sp * 1.6, 160 * devicePixelRatio);
       s.life -= 0.012;
       const g = cx.createLinearGradient(s.x, s.y, s.x - Math.cos(s.ang) * s.len, s.y - Math.sin(s.ang) * s.len);
-      g.addColorStop(0, `rgba(190,160,255,${Math.max(s.life, 0)})`);
-      g.addColorStop(1, 'rgba(190,160,255,0)');
+      const sc = light ? '110,70,200' : '190,160,255';
+      g.addColorStop(0, `rgba(${sc},${Math.max(s.life, 0)})`);
+      g.addColorStop(1, `rgba(${sc},0)`);
       cx.strokeStyle = g; cx.lineWidth = 2 * devicePixelRatio;
       cx.beginPath(); cx.moveTo(s.x, s.y);
       cx.lineTo(s.x - Math.cos(s.ang) * s.len, s.y - Math.sin(s.ang) * s.len);
@@ -117,7 +138,7 @@
 /* ---------- 打字机 ---------- */
 (() => {
   const el = document.getElementById('typed');
-  const lines = ['Software Developer', 'AI 工具与插件开发', 'Building cool stuff with code ✨'];
+  const lines = ['Crafting AI tools & plugins', '用代码制造快乐', 'Stay curious, keep shipping 🚀'];
   let li = 0, ci = 0, del = false;
   function tick() {
     const line = lines[li];
