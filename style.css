@@ -149,11 +149,6 @@ body {
 @keyframes pulse { 50% { opacity: 0.45; } }
 .card-soon { cursor: default; }
 
-/* 街机厅 */
-.arcade-hint { color: var(--muted); font-size: 14px; margin: -18px 0 20px; letter-spacing: 1px; }
-.arcade-frame { padding: 14px; max-width: 540px; margin: 0 auto; box-shadow: 0 0 44px rgba(163, 113, 247, 0.14); }
-.arcade-frame iframe { width: 100%; aspect-ratio: 480 / 600; border: 0; border-radius: 12px; display: block; }
-
 /* 页脚 */
 .footer { text-align: center; padding: 60px 20px 46px; border-top: 1px solid var(--line); color: var(--muted); font-size: 14px; }
 .footer img { margin-bottom: 14px; }
