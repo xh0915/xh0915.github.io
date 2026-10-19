@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Ricardo · 里卡多</title>
+  <meta name="description" content="里卡多 (Ricardo) 的个人主页 — Software Developer · AI 工具与插件开发" />
+  <link rel="stylesheet" href="style.css" />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚡</text></svg>" />
+</head>
+<body>
+  <!-- 背景层 -->
+  <canvas id="stars"></canvas>
+  <div class="orb orb-a"></div>
+  <div class="orb orb-b"></div>
+  <div class="orb orb-c"></div>
+  <div class="cursor-dot" id="cursorDot"></div>
+  <div class="cursor-ring" id="cursorRing"></div>
+
+  <!-- 导航 -->
+  <nav class="nav" id="nav">
+    <a class="brand" href="#top">XH<span class="brand-dot">.</span></a>
+    <div class="nav-links">
+      <a href="#about">关于</a>
+      <a href="#projects">项目</a>
+      <a href="#arcade">街机厅</a>
+      <a class="nav-cta" href="https://github.com/xh0915" target="_blank" rel="noopener">GitHub ↗</a>
+    </div>
+  </nav>
+
+  <!-- 首屏 -->
+  <header class="hero" id="top">
+    <p class="hero-hello reveal">你好，我是</p>
+    <h1 class="hero-name reveal">里卡多 <span class="wave">👋</span></h1>
+    <p class="hero-typing reveal"><span id="typed"></span><span class="caret"></span></p>
+    <div class="hero-actions reveal">
+      <a class="btn btn-primary" href="#projects">看看我的项目</a>
+      <a class="btn btn-ghost" href="#arcade">🎮 打条贪吃蛇</a>
+    </div>
+    <div class="scroll-hint reveal"><span></span></div>
+  </header>
+
+  <!-- 关于 -->
+  <section class="section" id="about">
+    <h2 class="section-title reveal"><span class="idx">01</span>关于我</h2>
+    <div class="about-grid">
+      <div class="glass about-text reveal">
+        <p>一名 <b class="hl">软件开发者</b>，痴迷于 AI 工具与插件开发 —— 目前正在折腾 <b class="hl">DeepSeek Harness</b> 的插件生态。</p>
+        <p>我相信工具应该有趣：比如这条会追着贡献格子跑的蛇，或者一个能直接在网页里玩的贪吃蛇彩蛋。</p>
+        <p class="motto">“Building cool stuff with code.”</p>
+      </div>
+      <div class="glass about-stack reveal">
+        <h3>技术栈</h3>
+        <img src="https://skillicons.dev/icons?i=python,javascript,typescript,vue,nodejs,django,fastapi,mysql,docker,git,linux&theme=dark"
+             alt="tech stack" loading="lazy" />
+      </div>
+    </div>
+  </section>
+
+  <!-- 项目 -->
+  <section class="section" id="projects">
+    <h2 class="section-title reveal"><span class="idx">02</span>项目</h2>
+    <div class="cards">
+      <a class="card reveal" href="https://github.com/xh0915/xh0915" target="_blank" rel="noopener">
+        <div class="card-glow"></div>
+        <h3>🐍 GitHub 贡献蛇</h3>
+        <p>自研生成器：有机游走路线、进食爆开特效、吃格子变长，每日自动刷新且免疫 CDN 缓存。</p>
+        <span class="card-tag">GitHub Actions · SVG · SMIL</span>
+      </a>
+      <a class="card reveal" href="https://github.com/xh0915" target="_blank" rel="noopener">
+        <div class="card-glow"></div>
+        <h3>⚡ GitHub 主页</h3>
+        <p>霓虹打字机、技术栈图标墙、访客计数——一个不刷新就永远定格的开场动画。</p>
+        <span class="card-tag">README · SVG 动画</span>
+      </a>
+      <div class="card card-soon reveal">
+        <div class="card-glow"></div>
+        <h3>🧩 Harness 插件 <span class="soon">SOON</span></h3>
+        <p>为 DeepSeek Harness 开发的插件们，正在路上。</p>
+        <span class="card-tag">Cordis · Plugin</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- 街机厅 -->
+  <section class="section" id="arcade">
+    <h2 class="section-title reveal"><span class="idx">03</span>街机厅</h2>
+    <p class="arcade-hint reveal">方向键 / WASD 移动 · 空格暂停 · 吃紫色格子加速</p>
+    <div class="arcade-frame glass reveal">
+      <iframe src="snake-game.svg" title="Snake Game" loading="lazy"></iframe>
+    </div>
+  </section>
+
+  <!-- 页脚 -->
+  <footer class="footer">
+    <img src="https://komarev.com/ghpvc/?username=xh0915&color=blueviolet&label=Visitors" alt="visitors" loading="lazy" />
+    <p>© 2026 里卡多 Ricardo · 用代码制造快乐</p>
+    <p class="muted">Hosted on GitHub Pages · 源码在 <a href="https://github.com/xh0915/xh0915.github.io" target="_blank" rel="noopener">xh0915.github.io</a></p>
+  </footer>
+
+  <script src="main.js"></script>
+</body>
+</html>
