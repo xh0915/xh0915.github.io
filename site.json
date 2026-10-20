@@ -1,0 +1,109 @@
+{
+  "name": "里卡多",
+  "latin": "Ricardo",
+  "role": "Independent Developer · AI Tools & Plugins",
+  "tagline": "AI 工具与插件 · 蓝白主义",
+  "description": "里卡多的作品集框架：AI 工具与插件，用 Vue 3 与 FastAPI 构建。",
+  "github": "https://github.com/xh0915",
+  "nav": [
+    {
+      "label": "作品",
+      "href": "#work"
+    },
+    {
+      "label": "关于",
+      "href": "#about"
+    },
+    {
+      "label": "联系",
+      "href": "#contact"
+    }
+  ],
+  "hero": {
+    "eyebrow": "AI TOOLS & PLUGINS · FRAMEWORK 2026",
+    "hello": "你好，我是里卡多",
+    "title_lead": "让 AI 工作流，",
+    "title_highlight": "清澈一点。",
+    "description": "独立开发者，专注 AI 工具与插件。先搭好一片干净的海：结构、手感与细节都已就位，等真正的作品完成后再让它入水。",
+    "primary": {
+      "label": "下潜看框架",
+      "href": "#work",
+      "external": false
+    },
+    "secondary": {
+      "label": "GitHub 主页",
+      "href": "https://github.com/xh0915",
+      "external": true
+    },
+    "stats": [
+      {
+        "value": "00",
+        "label": "已发布作品",
+        "note": "RELEASED"
+      },
+      {
+        "value": "01",
+        "label": "独立开发者",
+        "note": "SOLO"
+      },
+      {
+        "value": "2026",
+        "label": "持续搭建",
+        "note": "BUILDING"
+      }
+    ]
+  },
+  "about": {
+    "index": "02",
+    "label": "关于",
+    "label_en": "About",
+    "heading_lead": "设计的人，",
+    "heading_highlight": "也是写代码的人。",
+    "paragraphs": [
+      "我是里卡多，一名独立开发者，专注 AI 工具与插件生态。现在的主线，是把作品真正做出来，再放进这片海。",
+      "我不太相信堆满功能的界面。好工具应该在你需要时准确出现，在你专注时安静退后——这是这个框架的出发点。",
+      "这个站点用 Vue 3 与 FastAPI 搭建，蓝白取自深海与浅浪。颜色更少，信息更清楚，注意力才能留在真正重要的事情上。"
+    ],
+    "principles": [
+      {
+        "title": "清晰优先",
+        "text": "先回答“现在该做什么”，再考虑还能做什么。"
+      },
+      {
+        "title": "手感是设计",
+        "text": "焦点、快捷键与过渡，都应该有明确的落点。"
+      },
+      {
+        "title": "蓝白主义",
+        "text": "用更少的颜色和装饰，换取更久的专注。"
+      }
+    ],
+    "toolkit": [
+      "Vue 3",
+      "FastAPI",
+      "Python",
+      "Vite",
+      "SVG",
+      "CSS"
+    ],
+    "now": "搭建作品框架，等第一件作品入水"
+  },
+  "contact": {
+    "index": "03",
+    "label": "联系",
+    "label_en": "Contact",
+    "heading": "下一片海，一起游。",
+    "description": "如果你也在做 AI 工具，或想聊聊界面与插件，欢迎来 GitHub 找我。",
+    "cta": {
+      "label": "去 GitHub 找我",
+      "href": "https://github.com/xh0915",
+      "external": true
+    },
+    "note": "GitHub 是我最常出现的地方。"
+  },
+  "footer": {
+    "note": "© 2026 里卡多 Ricardo · 用代码制造一点清澈",
+    "disclaimer": "本站为个人作品集框架，非 DeepSeek 官方网站；DeepSeek 鲸鱼标识版权归其所有者。",
+    "built": "Vue 3 + Vite · FastAPI · 蓝白视觉"
+  }
+}
