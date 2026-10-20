@@ -3,7 +3,7 @@
   "latin": "Ricardo",
   "role": "Independent Developer · AI Tools & Plugins",
   "tagline": "AI 工具与插件 · 蓝白主义",
-  "description": "里卡多的作品集框架：AI 工具与插件，用 Vue 3 与 FastAPI 构建。",
+  "description": "里卡多的作品集：AI 工具与插件，第一款作品《航海日志》已上线。用 Vue 3 与 FastAPI 构建。",
   "github": "https://github.com/xh0915",
   "nav": [
     {
@@ -24,9 +24,9 @@
     "hello": "你好，我是里卡多",
     "title_lead": "让 AI 工作流，",
     "title_highlight": "清澈一点。",
-    "description": "独立开发者，专注 AI 工具与插件。先搭好一片干净的海：结构、手感与细节都已就位，等真正的作品完成后再让它入水。",
+    "description": "独立开发者，专注 AI 工具与插件。海已经清理干净：结构、手感与细节就位，作品开始一件件入水。",
     "primary": {
-      "label": "下潜看框架",
+      "label": "下潜看作品",
       "href": "#work",
       "external": false
     },
@@ -37,7 +37,7 @@
     },
     "stats": [
       {
-        "value": "00",
+        "value": "01",
         "label": "已发布作品",
         "note": "RELEASED"
       },
@@ -86,7 +86,7 @@
       "SVG",
       "CSS"
     ],
-    "now": "搭建作品框架，等第一件作品入水"
+    "now": "第一款插件已下水：航海日志 · Voyage Log；下一件在路上"
   },
   "contact": {
     "index": "03",
@@ -103,7 +103,42 @@
   },
   "footer": {
     "note": "© 2026 里卡多 Ricardo · 用代码制造一点清澈",
-    "disclaimer": "本站为个人作品集框架，非 DeepSeek 官方网站；DeepSeek 鲸鱼标识版权归其所有者。",
+    "disclaimer": "本站为里卡多的个人作品集，非 DeepSeek 官方网站；DeepSeek 鲸鱼标识版权归其所有者。",
     "built": "Vue 3 + Vite · FastAPI · 蓝白视觉"
-  }
+  },
+  "projects": [
+    {
+      "id": 1,
+      "slug": "voyage-log",
+      "index": "01",
+      "title": "航海日志",
+      "en": "VOYAGE LOG · DSH PLUGIN",
+      "tagline": "把一次 AI 会话，折成一份可审计的航海报告。",
+      "description": "双端 DeepSeek Harness 插件：宿主端读取真实会话日志，折叠成航段、工具调用、文件清单与 token 读数，脱敏之后才交给浏览器；一键导出单文件 HTML 或 Markdown，全程不上传任何内容。",
+      "tags": [
+        "TypeScript",
+        "React",
+        "Cordis",
+        "Zod",
+        "esbuild"
+      ],
+      "points": [
+        "屏幕上的每个数字都直接量自原始日志，没有估算，也不推断成本。",
+        "脱敏发生在跨出宿主进程之前：私钥块、JWT、各家 API key、URL 凭据与邮箱统一替换为 «已脱敏»。",
+        "导出是单文件 HTML——内联样式、无外链资源、无脚本，可以直接归档或转发。",
+        "101 个单元测试覆盖折叠、脱敏、双端契约与报告渲染。"
+      ],
+      "status": "SHIPPED",
+      "status_label": "源码已发布",
+      "year": "2026",
+      "preview": "works/voyage-log.png",
+      "preview_note": "设计稿 · 非实机截图",
+      "links": [
+        {
+          "label": "GitHub 仓库",
+          "href": "https://github.com/xh0915/dsh-voyage-log"
+        }
+      ]
+    }
+  ]
 }
