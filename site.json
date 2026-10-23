@@ -3,7 +3,7 @@
   "latin": "Ricardo",
   "role": "Independent Developer · AI Tools & Plugins",
   "tagline": "AI 工具与插件 · 蓝白主义",
-  "description": "里卡多的作品集：AI 工具与插件，第一款作品《航海日志》已上线。用 Vue 3 与 FastAPI 构建。",
+  "description": "里卡多的作品集：AI 工具与插件，已发布航海日志与航图两款 DSH 插件。用 Vue 3 与 FastAPI 构建。",
   "github": "https://github.com/xh0915",
   "nav": [
     {
@@ -37,7 +37,7 @@
     },
     "stats": [
       {
-        "value": "01",
+        "value": "02",
         "label": "已发布作品",
         "note": "RELEASED"
       },
@@ -86,7 +86,7 @@
       "SVG",
       "CSS"
     ],
-    "now": "第一款插件已下水：航海日志 · Voyage Log；下一件在路上"
+    "now": "两款插件已下水：航海日志 · Voyage Log 与航图 · Chart；下一件在路上"
   },
   "contact": {
     "index": "03",
@@ -137,6 +137,39 @@
         {
           "label": "GitHub 仓库",
           "href": "https://github.com/xh0915/dsh-voyage-log"
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "slug": "chart",
+      "index": "02",
+      "title": "航图",
+      "en": "CHART · DSH PLUGIN",
+      "tagline": "把一次真实会话，整理成一份可以重复使用的技能。",
+      "description": "DeepSeek Harness 插件：读取这次会话里真正跑通的命令、成功的验证、改动过的文件和踩过的坑，写成一份可编辑的 SKILL.md，保存到本机技能库。下次遇到相似任务，DSH 可以直接加载这份技能；脱敏与保存都在本机完成。",
+      "tags": [
+        "TypeScript",
+        "React",
+        "Cordis",
+        "Zod",
+        "esbuild"
+      ],
+      "points": [
+        "步骤来自真正执行成功的命令，验证来自真的通过了的测试、lint 和构建；失败的命令会作为坑记下来，并注明后来有没有修好。",
+        "技能保存到 ~/.dsh/skills/<名字>/SKILL.md，DSH 能自动发现；同名技能不会悄悄覆盖，替换前会先备份。",
+        "保存前可以逐段删改；技能名、文件夹名和文件开头的 name 始终对齐。",
+        "102 个单元测试覆盖会话整理、技能库读写、脱敏、接口和前端入口。"
+      ],
+      "status": "SHIPPED",
+      "status_label": "源码已发布",
+      "year": "2026",
+      "preview": "works/chart.png",
+      "preview_note": "界面预览 · 示例会话",
+      "links": [
+        {
+          "label": "GitHub 仓库",
+          "href": "https://github.com/xh0915/dsh-chart"
         }
       ]
     }
