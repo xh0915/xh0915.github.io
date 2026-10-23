@@ -3,7 +3,7 @@
   "latin": "Ricardo",
   "role": "Independent Developer · AI Tools & Plugins",
   "tagline": "AI 工具与插件 · 蓝白主义",
-  "description": "里卡多的作品集：AI 工具与插件，已发布航海日志与航图两款 DSH 插件。用 Vue 3 与 FastAPI 构建。",
+  "description": "里卡多的作品集：AI 工具与插件，已发布航海日志、航图与灯塔三款 DSH 插件。用 Vue 3 与 FastAPI 构建。",
   "github": "https://github.com/xh0915",
   "nav": [
     {
@@ -37,7 +37,7 @@
     },
     "stats": [
       {
-        "value": "02",
+        "value": "03",
         "label": "已发布作品",
         "note": "RELEASED"
       },
@@ -86,7 +86,7 @@
       "SVG",
       "CSS"
     ],
-    "now": "两款插件已下水：航海日志 · Voyage Log 与航图 · Chart；下一件在路上"
+    "now": "三款插件已下水：航海日志 · Voyage Log、航图 · Chart 与灯塔 · Lighthouse；下一件在路上"
   },
   "contact": {
     "index": "03",
@@ -170,6 +170,39 @@
         {
           "label": "GitHub 仓库",
           "href": "https://github.com/xh0915/dsh-chart"
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "slug": "lighthouse",
+      "index": "03",
+      "title": "灯塔",
+      "en": "LIGHTHOUSE · DSH PLUGIN",
+      "tagline": "把这次会话里难撤回的操作，挑出来讲清楚。",
+      "description": "DeepSeek Harness 插件：只读当前会话日志，找出删目录、强推分支、读密钥文件、按名字结束进程这类做了就很难撤回的动作。每条都说明动了什么、可能影响什么、下次怎么做更稳；密钥先在本机脱敏再显示，不上传，也不会重跑任何命令。",
+      "tags": [
+        "TypeScript",
+        "React",
+        "Cordis",
+        "Zod",
+        "esbuild"
+      ],
+      "points": [
+        "17 条规则分在删除、Git、进程、凭据、数据库、系统与网络七组里；说明文字里提到 rm -rf 不会误报。",
+        "每条风险都写清目标、日志里的原命令、为什么难撤回，以及一个更稳的做法；相同动作会合并。",
+        "标题、目标、命令和路径都在离开本机前脱敏；页面只报告遮住了多少处，不显示密钥本身。",
+        "82 个单元测试覆盖检测规则、脱敏、报告、接口和前端入口。"
+      ],
+      "status": "SHIPPED",
+      "status_label": "源码已发布",
+      "year": "2026",
+      "preview": "works/lighthouse.png",
+      "preview_note": "界面预览 · 示例会话",
+      "links": [
+        {
+          "label": "GitHub 仓库",
+          "href": "https://github.com/xh0915/dsh-lighthouse"
         }
       ]
     }
