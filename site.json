@@ -3,7 +3,7 @@
   "latin": "Ricardo",
   "role": "Independent Developer · AI Tools & Plugins",
   "tagline": "AI 工具与插件 · 蓝白主义",
-  "description": "里卡多的作品集：三款已发布的 DeepSeek Harness 插件——航海日志把一次 AI 会话整理成报告，航图把跑通的步骤整理成技能，灯塔把难撤回的操作挑出来讲清楚。用 Vue 3 与 FastAPI 构建。",
+  "description": "里卡多的作品集：四款已发布的 DeepSeek Harness 作品——航海日志把一次 AI 会话整理成报告，航图把跑通的步骤整理成技能，灯塔把难撤回的操作挑出来讲清楚，鲸歌把文字读成声音、把录音听写成文字。用 Vue 3 与 FastAPI 构建。",
   "github": "https://github.com/xh0915",
   "nav": [
     {
@@ -24,7 +24,7 @@
     "hello": "你好，我是里卡多",
     "title_lead": "让 AI 工作流，",
     "title_highlight": "清澈一点。",
-    "description": "独立开发者，专注 AI 工具与插件。三款 DeepSeek Harness 插件已经下水：把一次会话讲清楚的航海日志、把跑通的步骤存成技能的航图、把难撤回操作挑出来的灯塔。",
+    "description": "独立开发者，专注 AI 工具与插件。四款 DeepSeek Harness 作品已经下水：把一次会话讲清楚的航海日志、把跑通的步骤存成技能的航图、把难撤回操作挑出来的灯塔、把文字读成声音的鲸歌。",
     "primary": {
       "label": "下潜看作品",
       "href": "#work",
@@ -37,12 +37,12 @@
     },
     "stats": [
       {
-        "value": "03",
+        "value": "04",
         "label": "已发布作品",
         "note": "RELEASED"
       },
       {
-        "value": "285",
+        "value": "296",
         "label": "个单元测试",
         "note": "ALL PASSING"
       },
@@ -86,7 +86,7 @@
       "SVG",
       "CSS"
     ],
-    "now": "三款插件已下水：航海日志 · Voyage Log、航图 · Chart 与灯塔 · Lighthouse；下一件在路上"
+    "now": "四款作品已下水：航海日志 · Voyage Log、航图 · Chart、灯塔 · Lighthouse 与鲸歌 · Voice"
   },
   "contact": {
     "index": "03",
@@ -203,6 +203,39 @@
         {
           "label": "GitHub 仓库",
           "href": "https://github.com/xh0915/dsh-lighthouse"
+        }
+      ]
+    },
+    {
+      "id": 4,
+      "slug": "voice",
+      "index": "04",
+      "title": "鲸歌",
+      "en": "VOICE · DSH SKILL",
+      "tagline": "把文字读成声音，把录音听写成文字。",
+      "description": "晚上改完一章小说，想听一遍再睡；手机里有一段录音，想知道说了什么——鲸歌管这两件事。朗读走 Breeze Blue 的语音合成：522 个中文音色、8 种口音，能用一句自然语言指挥语气，文本里写 [叹气] [笑] [咳嗽]，读出来就真的有这些反应；听写走阿里百炼，因为 Breeze 只做合成、没有转写接口。生成前先报成本，--dry-run 只算钱不扣费。",
+      "tags": [
+        "Python",
+        "TTS",
+        "STT",
+        "零依赖",
+        "CLI"
+      ],
+      "points": [
+        "朗读、批量配音、文字描述造声、录音克隆是一条命令链；克隆前先出预览，试听满意再保存，不满意的预览不占名额。",
+        "生成前先报成本，--dry-run 只算不跑；查音色、查余额、查模型这些不扣费的操作，和扣费的操作分得清清楚楚。",
+        "key 只在你本机的 .env 里读取，再直接发给服务商；这个技能没有服务器，仓库里也没有任何真实 key。",
+        "11 个离线单元测试不联网、不扣费，还会扫描整个仓库，确认没有密钥混进提交。"
+      ],
+      "status": "SHIPPED",
+      "status_label": "源码已发布",
+      "year": "2026",
+      "preview": "works/voice.png",
+      "preview_note": "真实终端输出 · dry-run 模式",
+      "links": [
+        {
+          "label": "GitHub 仓库",
+          "href": "https://github.com/xh0915/dsh-voice"
         }
       ]
     }
