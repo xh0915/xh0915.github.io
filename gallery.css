@@ -78,7 +78,7 @@
   display: grid;
   grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr);
   gap: clamp(28px, 4.5vw, 72px);
-  align-items: center;
+  align-items: start;
   padding: clamp(44px, 6vw, 84px) 0;
   border-top: 1px solid var(--line);
 }
@@ -199,8 +199,9 @@
 #guide .guide-body {
   margin: 14px 0 0;
   color: var(--muted);
-  font-size: 14px;
+  font-size: 13.5px;
   line-height: 1.95;
+  max-width: 520px;
 }
 
 #guide .guide-pair {
