@@ -298,6 +298,229 @@
     if (target && target.classList.contains('guide-item')) setOpen(target, true);
   }
 
+  /* ---- sonar scan presentation ---- */
+
+  var scanUI = null;
+  var scanState = { busy: false, count: 0, trigger: null, showTimer: 0, autoTimer: 0 };
+
+  function pad3(n) {
+    return ('00' + n).slice(-3);
+  }
+
+  function prefersReduced() {
+    return !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
+  }
+
+  function signalsFromGuide() {
+    var items = document.querySelectorAll('#guide .guide-item');
+    return Array.prototype.map
+      .call(items, function (item) {
+        var title = item.querySelector('.guide-summary-title');
+        var en = item.querySelector('.guide-eyebrow');
+        return {
+          slug: (item.id || '').replace(/^guide-/, ''),
+          title: title ? title.textContent : '',
+          en: en ? en.textContent : ''
+        };
+      })
+      .filter(function (signal) {
+        return signal.slug;
+      });
+  }
+
+  function ensureScanUI() {
+    if (scanUI) return scanUI;
+
+    var scrim = el('div');
+    scrim.id = 'scan-scrim';
+
+    var report = el('div', 'scan-report');
+    report.setAttribute('role', 'dialog');
+    report.setAttribute('aria-labelledby', 'scan-report-title');
+    report.setAttribute('aria-hidden', 'true');
+
+    var head = el('div', 'scan-report-head');
+    head.appendChild(el('span', 'scan-report-kicker', 'SONAR REPORT · 周围海域'));
+    var close = el('button', 'scan-report-close');
+    close.type = 'button';
+    close.setAttribute('aria-label', '关闭扫描结果');
+    close.appendChild(icon('', CROSS));
+    head.appendChild(close);
+
+    var title = el('h3');
+    title.id = 'scan-report-title';
+    var sub = el('p', 'scan-report-sub');
+    var list = el('ol', 'scan-signals');
+    var foot = el('div', 'scan-report-foot');
+    var stamp = el('span');
+    foot.appendChild(stamp);
+    foot.appendChild(el('span', '', 'ESC 关闭'));
+
+    report.appendChild(head);
+    report.appendChild(title);
+    report.appendChild(sub);
+    report.appendChild(list);
+    report.appendChild(foot);
+    document.body.appendChild(scrim);
+    document.body.appendChild(report);
+    if ('inert' in report) report.inert = true;
+
+    close.addEventListener('click', closeScan);
+    scrim.addEventListener('click', closeScan);
+
+    scanUI = { scrim: scrim, report: report, close: close, title: title, sub: sub, list: list, stamp: stamp };
+    return scanUI;
+  }
+
+  function fillScanReport(ui) {
+    var signals = signalsFromGuide();
+    var count = signals.length;
+
+    ui.title.textContent = '';
+    if (count) {
+      ui.title.appendChild(document.createTextNode('捕获 '));
+      ui.title.appendChild(el('b', '', pad(count)));
+      ui.title.appendChild(document.createTextNode(' 个作品信号'));
+      ui.sub.textContent = '每一道回波都是一款已经下水的插件。点一个，图鉴会展开它的全部细节。';
+    } else {
+      ui.title.appendChild(document.createTextNode('这片海域暂时安静'));
+      ui.sub.textContent = '作品图鉴还没挂上浮标，稍后再扫一次。';
+    }
+
+    ui.list.textContent = '';
+    signals.forEach(function (signal, index) {
+      var li = el('li');
+      var button = el('button');
+      button.type = 'button';
+      button.setAttribute('data-scan-jump', signal.slug);
+      button.appendChild(el('span', 'scan-signal-num', pad(index + 1)));
+      var text = el('span');
+      text.appendChild(el('span', 'scan-signal-title', signal.title || signal.slug));
+      if (signal.en) text.appendChild(el('span', 'scan-signal-meta', signal.en));
+      button.appendChild(text);
+      button.appendChild(icon('scan-signal-arrow', ARROW));
+      li.appendChild(button);
+      ui.list.appendChild(li);
+    });
+
+    ui.stamp.textContent =
+      'SWEEP ' + pad3(scanState.count) + ' · ' + pad(count) + (count === 1 ? ' SIGNAL' : ' SIGNALS');
+  }
+
+  function paintScanRings(trigger) {
+    var layer = el('div');
+    layer.id = 'scan-layer';
+    layer.setAttribute('aria-hidden', 'true');
+    var rect = trigger.getBoundingClientRect();
+    var cx = rect.left + rect.width / 2;
+    var cy = rect.top + rect.height / 2;
+    for (var i = 0; i < 3; i += 1) {
+      var ring = el('span', 'scan-ring');
+      ring.style.left = cx + 'px';
+      ring.style.top = cy + 'px';
+      layer.appendChild(ring);
+    }
+    document.body.appendChild(layer);
+    window.setTimeout(function () {
+      if (layer.parentNode) layer.parentNode.removeChild(layer);
+    }, 2600);
+  }
+
+  function openScan(trigger) {
+    if (scanState.busy) return;
+    scanState.busy = true;
+    scanState.count += 1;
+    scanState.trigger = trigger;
+
+    var ui = ensureScanUI();
+    fillScanReport(ui);
+    if (!prefersReduced()) paintScanRings(trigger);
+
+    window.clearTimeout(scanState.showTimer);
+    scanState.showTimer = window.setTimeout(
+      function () {
+        if ('inert' in ui.report) ui.report.inert = false;
+        ui.report.setAttribute('aria-hidden', 'false');
+        ui.scrim.classList.add('is-open');
+        ui.report.classList.add('is-open');
+        ui.close.focus({ preventScroll: true });
+        window.clearTimeout(scanState.autoTimer);
+        scanState.autoTimer = window.setTimeout(closeScan, 15000);
+      },
+      prefersReduced() ? 0 : 1050
+    );
+  }
+
+  function closeScan() {
+    window.clearTimeout(scanState.showTimer);
+    window.clearTimeout(scanState.autoTimer);
+    scanState.busy = false;
+    if (!scanUI) return;
+    scanUI.scrim.classList.remove('is-open');
+    scanUI.report.classList.remove('is-open');
+    scanUI.report.setAttribute('aria-hidden', 'true');
+    if ('inert' in scanUI.report) scanUI.report.inert = true;
+    var trigger = scanState.trigger;
+    if (trigger && trigger.isConnected && typeof trigger.focus === 'function') {
+      trigger.focus({ preventScroll: true });
+    }
+  }
+
+  function jumpToSignal(slug) {
+    var item = document.getElementById('guide-' + slug);
+    closeScan();
+    if (!item) {
+      var section = document.getElementById('guide');
+      if (section) section.scrollIntoView({ behavior: prefersReduced() ? 'auto' : 'smooth', block: 'start' });
+      return;
+    }
+    Array.prototype.forEach.call(
+      document.querySelectorAll('#guide .guide-item.is-open'),
+      function (other) {
+        if (other !== item) setOpen(other, false);
+      }
+    );
+    setOpen(item, true);
+    item.scrollIntoView({ behavior: prefersReduced() ? 'auto' : 'smooth', block: 'start' });
+    item.classList.remove('is-flash');
+    void item.offsetWidth;
+    item.classList.add('is-flash');
+    window.setTimeout(function () {
+      item.classList.remove('is-flash');
+    }, 2000);
+  }
+
+  function bindScan() {
+    if (window.__scanReady) return;
+    window.__scanReady = true;
+
+    document.addEventListener(
+      'click',
+      function (event) {
+        var target = event.target;
+        if (!target || !target.closest) return;
+
+        var jump = target.closest('[data-scan-jump]');
+        if (jump) {
+          event.preventDefault();
+          jumpToSignal(jump.getAttribute('data-scan-jump'));
+          return;
+        }
+
+        var button = target.closest('button');
+        if (!button) return;
+        if (button.classList.contains('dock-radar') || /扫描周围海域/.test(button.textContent || '')) {
+          openScan(button);
+        }
+      },
+      true
+    );
+
+    document.addEventListener('keydown', function (event) {
+      if (event.key === 'Escape' && scanState.busy) closeScan();
+    });
+  }
+
   function build(site) {
     var projects = Array.isArray(site.projects) ? site.projects : [];
     if (!projects.length) return null;
@@ -385,8 +608,12 @@
   }
 
   if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', boot);
+    document.addEventListener('DOMContentLoaded', function () {
+      bindScan();
+      boot();
+    });
   } else {
+    bindScan();
     boot();
   }
 })();
