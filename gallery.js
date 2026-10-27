@@ -6,13 +6,17 @@
 
   var ARROW =
     '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5.5 10.5 10.5 5.5M6.5 5.5h4v4"/></svg>';
+  var CHEVRON =
+    '<svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2.5 4.5 6 8l3.5-3.5"/></svg>';
+  var CROSS =
+    '<svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><path d="M2.5 2.5l7 7M9.5 2.5l-7 7"/></svg>';
 
   var FALLBACK = {
     label: '作品图鉴',
     title_lead: '四款插件，',
     title_highlight: '逐段看清。',
     count: '04 IN DEPTH · 2026',
-    aside: '大图、做法、适用场景一次讲全。四款都开源，仓库里有完整说明和真实测试。',
+    aside: '点开任意一款，看大图、做法与适用场景。四款都开源，仓库里有完整说明和真实测试。',
     footer: 'ALL SOURCE ON GITHUB',
     footer_cta: { label: '去 GitHub 看全部源码', href: 'https://github.com/xh0915' }
   };
@@ -22,6 +26,12 @@
     if (cls) node.className = cls;
     if (text !== undefined && text !== null) node.textContent = text;
     return node;
+  }
+
+  function icon(cls, markup) {
+    var span = el('span', cls);
+    span.innerHTML = markup;
+    return span;
   }
 
   function pad(n) {
@@ -39,31 +49,26 @@
     a.target = '_blank';
     a.rel = 'noopener';
     a.appendChild(el('span', '', label));
-    var icon = el('span');
-    icon.style.display = 'inline-flex';
-    icon.innerHTML = ARROW;
-    a.appendChild(icon);
+    a.appendChild(icon('', ARROW));
     return a;
   }
 
-  function buildFigure(project, index, total) {
-    var figure = el('figure', 'guide-figure');
-    var frame = el('div', 'guide-frame');
+  function previewImage(project, withAlt) {
     var img = document.createElement('img');
     img.src = assetUrl(project.preview);
-    img.alt = (project.title || '') + '的界面预览';
+    img.alt = withAlt ? (project.title || '') + '的界面预览' : '';
     img.width = 2880;
     img.height = 1800;
     img.loading = 'lazy';
     img.decoding = 'async';
-    frame.appendChild(img);
-    figure.appendChild(frame);
+    return img;
+  }
 
-    var caption = el('figcaption');
-    caption.appendChild(el('span', '', pad(index + 1) + ' / ' + pad(total)));
-    caption.appendChild(el('span', '', project.preview_note || ''));
-    figure.appendChild(caption);
-    return figure;
+  function setZoomData(button, project, index, total) {
+    button.setAttribute('data-src', assetUrl(project.preview));
+    button.setAttribute('data-title', project.title || '');
+    button.setAttribute('data-note', project.preview_note || '');
+    button.setAttribute('data-index', pad(index + 1) + ' / ' + pad(total));
   }
 
   function buildPair(project) {
@@ -84,18 +89,8 @@
     return pair;
   }
 
-  function buildProject(project, index, total) {
-    var item = el('article', 'guide-item');
-    if (project.slug) item.id = 'guide-' + project.slug;
-
+  function buildCopy(project) {
     var copy = el('div', 'guide-copy');
-    var top = el('div', 'guide-top');
-    top.appendChild(el('span', 'guide-index', pad(index + 1)));
-    top.appendChild(el('span', 'guide-eyebrow', project.en || 'DSH PLUGIN'));
-    copy.appendChild(top);
-
-    copy.appendChild(el('h3', '', project.title || ''));
-    if (project.tagline) copy.appendChild(el('p', 'guide-lead', project.tagline));
     if (project.description) copy.appendChild(el('p', 'guide-body', project.description));
 
     var pair = buildPair(project);
@@ -129,10 +124,178 @@
       meta.appendChild(actionLink(primary.href, primary.label || '查看仓库', 'guide-link'));
     }
     copy.appendChild(meta);
+    return copy;
+  }
 
-    item.appendChild(buildFigure(project, index, total));
-    item.appendChild(copy);
+  function buildItem(project, index, total) {
+    var item = el('article', 'guide-item');
+    if (project.slug) item.id = 'guide-' + project.slug;
+
+    var row = el('div', 'guide-row');
+
+    var thumb = el('button', 'guide-thumb');
+    thumb.type = 'button';
+    thumb.setAttribute('aria-label', '放大查看' + (project.title || '') + '的界面预览');
+    thumb.setAttribute('data-guide-zoom', '');
+    setZoomData(thumb, project, index, total);
+    thumb.appendChild(previewImage(project, false));
+    row.appendChild(thumb);
+
+    var panelId = 'guide-panel-' + (project.slug || index + 1);
+    var summary = el('button', 'guide-summary');
+    summary.type = 'button';
+    summary.setAttribute('aria-expanded', 'false');
+    summary.setAttribute('aria-controls', panelId);
+    summary.appendChild(el('span', 'guide-num', pad(index + 1)));
+
+    var text = el('span', 'guide-summary-text');
+    text.appendChild(el('span', 'guide-eyebrow', project.en || 'DSH PLUGIN'));
+    text.appendChild(el('span', 'guide-summary-title', project.title || ''));
+    if (project.tagline) text.appendChild(el('span', 'guide-summary-lead', project.tagline));
+    summary.appendChild(text);
+
+    var hint = el('span', 'guide-toggle-hint');
+    hint.appendChild(el('span', 'guide-toggle-label', '展开详情'));
+    hint.appendChild(icon('', CHEVRON));
+    summary.appendChild(hint);
+    row.appendChild(summary);
+    item.appendChild(row);
+
+    var panel = el('div', 'guide-panel');
+    panel.id = panelId;
+    panel.setAttribute('aria-hidden', 'true');
+    var inner = el('div', 'guide-panel-inner');
+    var detail = el('div', 'guide-detail');
+
+    var figure = el('figure', 'guide-figure');
+    var large = el('button', 'guide-zoom-large');
+    large.type = 'button';
+    large.setAttribute('aria-label', '放大查看' + (project.title || '') + '的界面预览');
+    large.setAttribute('data-guide-zoom', '');
+    setZoomData(large, project, index, total);
+    large.appendChild(previewImage(project, true));
+    figure.appendChild(large);
+
+    var caption = el('figcaption');
+    caption.appendChild(el('span', '', pad(index + 1) + ' / ' + pad(total)));
+    caption.appendChild(el('span', '', project.preview_note || ''));
+    figure.appendChild(caption);
+
+    detail.appendChild(figure);
+    detail.appendChild(buildCopy(project));
+    inner.appendChild(detail);
+    panel.appendChild(inner);
+    item.appendChild(panel);
+
+    if ('inert' in panel) panel.inert = true;
     return item;
+  }
+
+  function setOpen(item, open) {
+    var summary = item.querySelector('.guide-summary');
+    var panel = item.querySelector('.guide-panel');
+    var label = item.querySelector('.guide-toggle-label');
+    item.classList.toggle('is-open', open);
+    if (summary) summary.setAttribute('aria-expanded', open ? 'true' : 'false');
+    if (label) label.textContent = open ? '收起' : '展开详情';
+    if (panel) {
+      panel.setAttribute('aria-hidden', open ? 'false' : 'true');
+      if ('inert' in panel) panel.inert = !open;
+    }
+  }
+
+  var lightbox = null;
+
+  function ensureLightbox() {
+    if (lightbox) return lightbox;
+    var dialog = document.createElement('dialog');
+    dialog.id = 'guide-lightbox';
+    dialog.setAttribute('aria-label', '作品预览大图');
+
+    var inner = el('div', 'guide-lightbox-inner');
+    var img = document.createElement('img');
+    img.alt = '';
+    inner.appendChild(img);
+
+    var bar = el('div', 'guide-lightbox-bar');
+    var raw = el('a', 'guide-lightbox-raw', '查看原图');
+    raw.target = '_blank';
+    raw.rel = 'noopener';
+    var close = el('button', 'guide-lightbox-close');
+    close.type = 'button';
+    close.setAttribute('aria-label', '关闭预览');
+    close.appendChild(icon('', CROSS));
+    bar.appendChild(raw);
+    bar.appendChild(close);
+
+    var caption = el('p', 'guide-lightbox-caption');
+
+    dialog.appendChild(inner);
+    dialog.appendChild(bar);
+    dialog.appendChild(caption);
+    document.body.appendChild(dialog);
+
+    close.addEventListener('click', function () {
+      dialog.close();
+    });
+    inner.addEventListener('click', function (event) {
+      if (event.target === inner) dialog.close();
+    });
+    dialog.addEventListener('close', function () {
+      img.removeAttribute('src');
+    });
+
+    lightbox = dialog;
+    return dialog;
+  }
+
+  function openLightbox(button) {
+    var dialog = ensureLightbox();
+    var img = dialog.querySelector('.guide-lightbox-inner img');
+    var raw = dialog.querySelector('.guide-lightbox-raw');
+    var caption = dialog.querySelector('.guide-lightbox-caption');
+    var src = button.getAttribute('data-src');
+    img.src = src;
+    img.alt = (button.getAttribute('data-title') || '') + '的界面预览';
+    raw.href = src;
+    caption.textContent = [
+      button.getAttribute('data-index'),
+      button.getAttribute('data-note')
+    ].filter(Boolean).join(' · ');
+    if (typeof dialog.showModal === 'function') dialog.showModal();
+    else dialog.setAttribute('open', '');
+    var close = dialog.querySelector('.guide-lightbox-close');
+    if (close) close.focus({ preventScroll: true });
+  }
+
+  function bindToggle(section) {
+    section.addEventListener('click', function (event) {
+      var zoom = event.target.closest('[data-guide-zoom]');
+      if (zoom) {
+        event.preventDefault();
+        openLightbox(zoom);
+        return;
+      }
+      var summary = event.target.closest('.guide-summary');
+      if (!summary) return;
+      var item = summary.closest('.guide-item');
+      if (!item) return;
+      var isOpen = item.classList.contains('is-open');
+      Array.prototype.forEach.call(
+        section.querySelectorAll('.guide-item.is-open'),
+        function (other) {
+          if (other !== item) setOpen(other, false);
+        }
+      );
+      setOpen(item, !isOpen);
+    });
+  }
+
+  function openFromHash(section) {
+    var hash = window.location.hash || '';
+    if (hash.indexOf('#guide-') !== 0) return;
+    var target = document.getElementById(hash.slice(1));
+    if (target && target.classList.contains('guide-item')) setOpen(target, true);
   }
 
   function build(site) {
@@ -147,7 +310,10 @@
       count: copy.count || FALLBACK.count,
       aside: copy.aside || FALLBACK.aside,
       footer: copy.footer || FALLBACK.footer,
-      footer_cta: copy.footer_cta || { label: FALLBACK.footer_cta.label, href: site.github || FALLBACK.footer_cta.href }
+      footer_cta: copy.footer_cta || {
+        label: FALLBACK.footer_cta.label,
+        href: site.github || FALLBACK.footer_cta.href
+      }
     };
 
     var section = el('section');
@@ -177,7 +343,7 @@
 
     var items = el('div', 'guide-items');
     projects.forEach(function (project, index) {
-      items.appendChild(buildProject(project, index, projects.length));
+      items.appendChild(buildItem(project, index, projects.length));
     });
     shell.appendChild(items);
 
@@ -187,6 +353,7 @@
     shell.appendChild(foot);
 
     section.appendChild(shell);
+    bindToggle(section);
     return section;
   }
 
@@ -195,6 +362,7 @@
     var work = document.getElementById('work');
     if (!work || !work.parentNode) return false;
     work.parentNode.insertBefore(section, work.nextSibling);
+    openFromHash(section);
     return true;
   }
 
