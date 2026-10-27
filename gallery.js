@@ -402,6 +402,7 @@
     ui.list.textContent = '';
     signals.forEach(function (signal, index) {
       var li = el('li');
+      li.style.setProperty('--scan-i', index);
       var button = el('button');
       button.type = 'button';
       button.setAttribute('data-scan-jump', signal.slug);
@@ -419,23 +420,47 @@
       'SWEEP ' + pad3(scanState.count) + ' · ' + pad(count) + (count === 1 ? ' SIGNAL' : ' SIGNALS');
   }
 
-  function paintScanRings(trigger) {
+  function paintScan(trigger) {
     var layer = el('div');
     layer.id = 'scan-layer';
     layer.setAttribute('aria-hidden', 'true');
     var rect = trigger.getBoundingClientRect();
     var cx = rect.left + rect.width / 2;
     var cy = rect.top + rect.height / 2;
-    for (var i = 0; i < 3; i += 1) {
+    layer.style.setProperty('--scan-x', cx + 'px');
+    layer.style.setProperty('--scan-y', cy + 'px');
+
+    var sweep = el('span', 'scan-sweep');
+    sweep.style.left = cx + 'px';
+    sweep.style.top = cy + 'px';
+    layer.appendChild(sweep);
+
+    for (var i = 0; i < 4; i += 1) {
       var ring = el('span', 'scan-ring');
       ring.style.left = cx + 'px';
       ring.style.top = cy + 'px';
+      ring.style.animationDelay = i * 0.18 + 's';
       layer.appendChild(ring);
     }
+
+    var reach = Math.min(window.innerWidth, window.innerHeight);
+    var base = (scanState.count % 4) * 16 - 72;
+    var angles = [-56, -18, 26, 64];
+    var factors = [0.3, 0.46, 0.38, 0.54];
+    for (var b = 0; b < angles.length; b += 1) {
+      var rad = ((base + angles[b] - 90) * Math.PI) / 180;
+      var radius = Math.max(110, reach * factors[b]);
+      var blip = el('span', 'scan-blip');
+      blip.style.left = cx + Math.cos(rad) * radius + 'px';
+      blip.style.top = cy + Math.sin(rad) * radius + 'px';
+      blip.style.animationDelay = 0.3 + b * 0.15 + 's';
+      layer.appendChild(blip);
+    }
+
     document.body.appendChild(layer);
     window.setTimeout(function () {
       if (layer.parentNode) layer.parentNode.removeChild(layer);
-    }, 2600);
+    }, 3200);
   }
 
   function openScan(trigger) {
@@ -446,7 +471,7 @@
 
     var ui = ensureScanUI();
     fillScanReport(ui);
-    if (!prefersReduced()) paintScanRings(trigger);
+    if (!prefersReduced()) paintScan(trigger);
 
     window.clearTimeout(scanState.showTimer);
     scanState.showTimer = window.setTimeout(
@@ -459,7 +484,7 @@
         window.clearTimeout(scanState.autoTimer);
         scanState.autoTimer = window.setTimeout(closeScan, 20000);
       },
-      prefersReduced() ? 0 : 520
+      prefersReduced() ? 0 : 620
     );
   }
 

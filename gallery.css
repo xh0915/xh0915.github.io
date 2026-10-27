@@ -656,38 +656,140 @@
   pointer-events: none;
 }
 
+#scan-layer::before {
+  content: "";
+  position: absolute;
+  left: var(--scan-x, 50%);
+  top: var(--scan-y, 60%);
+  width: 120vmax;
+  height: 120vmax;
+  margin: -60vmax 0 0 -60vmax;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(61, 90, 241, 0.11) 0%, rgba(61, 90, 241, 0.04) 30%, transparent 62%);
+  opacity: 0;
+  animation: scan-veil 2.6s ease-out forwards;
+}
+
+#scan-layer .scan-sweep {
+  position: absolute;
+  width: 120vmax;
+  height: 120vmax;
+  margin: -60vmax 0 0 -60vmax;
+  border-radius: 50%;
+  background: conic-gradient(from 0deg, rgba(61, 90, 241, 0.26), rgba(61, 90, 241, 0.06) 42deg, transparent 88deg);
+  opacity: 0;
+  animation: scan-sweep 1.9s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
 #scan-layer .scan-ring {
   position: absolute;
-  width: 140px;
-  height: 140px;
-  margin: -70px 0 0 -70px;
+  width: 150px;
+  height: 150px;
+  margin: -75px 0 0 -75px;
+  border: 1px solid rgba(61, 90, 241, 0.5);
+  border-radius: 50%;
+  box-shadow: 0 0 24px rgba(61, 90, 241, 0.16), inset 0 0 24px rgba(61, 90, 241, 0.07);
+  opacity: 0;
+  animation: scan-ring 2.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+#scan-layer .scan-blip {
+  position: absolute;
+  width: 9px;
+  height: 9px;
+  margin: -4.5px 0 0 -4.5px;
+  border: 1.5px solid rgba(61, 90, 241, 0.9);
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 0 14px rgba(61, 90, 241, 0.55);
+  opacity: 0;
+  animation: scan-blip 1.7s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+#scan-layer .scan-blip::after {
+  content: "";
+  position: absolute;
+  inset: -2px;
   border: 1px solid rgba(61, 90, 241, 0.55);
   border-radius: 50%;
-  opacity: 0;
-  animation: scan-ring 1.9s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  animation: scan-blip-halo 1.7s ease-out forwards;
 }
 
-#scan-layer .scan-ring:nth-child(2) {
-  animation-delay: 0.2s;
+@keyframes scan-veil {
+  0% {
+    opacity: 0;
+  }
+  18% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
 }
 
-#scan-layer .scan-ring:nth-child(3) {
-  animation-delay: 0.4s;
+@keyframes scan-sweep {
+  0% {
+    transform: rotate(-48deg) scale(0.92);
+    opacity: 0;
+  }
+  10% {
+    opacity: 0.75;
+  }
+  65% {
+    opacity: 0.32;
+  }
+  100% {
+    transform: rotate(186deg) scale(1);
+    opacity: 0;
+  }
 }
 
 @keyframes scan-ring {
   0% {
-    transform: scale(0.15);
+    transform: scale(0.12);
     opacity: 0;
   }
-  8% {
-    opacity: 0.8;
+  7% {
+    opacity: 0.85;
   }
-  70% {
-    opacity: 0.22;
+  62% {
+    opacity: 0.26;
   }
   100% {
-    transform: scale(24);
+    transform: scale(26);
+    opacity: 0;
+  }
+}
+
+@keyframes scan-blip {
+  0% {
+    transform: scale(0.3);
+    opacity: 0;
+  }
+  16% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  55% {
+    transform: scale(1);
+    opacity: 0.9;
+  }
+  100% {
+    transform: scale(1.1);
+    opacity: 0;
+  }
+}
+
+@keyframes scan-blip-halo {
+  0% {
+    transform: scale(0.6);
+    opacity: 0;
+  }
+  20% {
+    opacity: 0.7;
+  }
+  100% {
+    transform: scale(3.2);
     opacity: 0;
   }
 }
@@ -696,12 +798,12 @@
   position: fixed;
   inset: 0;
   z-index: 91;
-  background: rgba(6, 26, 63, 0.34);
-  -webkit-backdrop-filter: blur(4px);
-  backdrop-filter: blur(4px);
+  background: rgba(6, 26, 63, 0.3);
+  -webkit-backdrop-filter: blur(6px);
+  backdrop-filter: blur(6px);
   opacity: 0;
   pointer-events: none;
-  transition: opacity 0.35s var(--ease);
+  transition: opacity 0.45s var(--ease);
 }
 
 #scan-scrim.is-open {
@@ -725,14 +827,64 @@
   box-shadow: 0 64px 140px -56px rgba(10, 27, 61, 0.6);
   opacity: 0;
   pointer-events: none;
-  transform: translate(-50%, -46%) scale(0.97);
-  transition: opacity 0.35s var(--ease), transform 0.45s var(--ease);
+  transform: translate(-50%, -44%) scale(0.96);
+  transition: opacity 0.4s var(--ease), transform 0.55s var(--ease);
 }
 
 .scan-report.is-open {
   opacity: 1;
   pointer-events: auto;
   transform: translate(-50%, -50%) scale(1);
+}
+
+.scan-report::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, rgba(61, 90, 241, 0.55), transparent);
+  box-shadow: 0 0 18px rgba(61, 90, 241, 0.35);
+  opacity: 0;
+  pointer-events: none;
+}
+
+.scan-report.is-open::after {
+  animation: scan-card-line 1.4s var(--ease) 0.2s 1 both;
+}
+
+@keyframes scan-card-line {
+  0% {
+    top: 0;
+    opacity: 0;
+  }
+  12% {
+    opacity: 1;
+  }
+  82% {
+    opacity: 0.35;
+  }
+  100% {
+    top: calc(100% - 2px);
+    opacity: 0;
+  }
+}
+
+.scan-report.is-open .scan-signals li {
+  animation: scan-row-in 0.5s var(--ease) both;
+  animation-delay: calc(0.16s + var(--scan-i, 0) * 0.07s);
+}
+
+@keyframes scan-row-in {
+  0% {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .scan-report-head {
@@ -959,6 +1111,11 @@
   .scan-signals button,
   .scan-signal-arrow {
     transition: none;
+  }
+
+  .scan-report::after,
+  .scan-report.is-open .scan-signals li {
+    animation: none;
   }
 
   #guide .guide-item.is-flash {
