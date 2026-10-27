@@ -107,6 +107,7 @@
 #guide .guide-thumb img {
   display: block;
   width: 100%;
+  height: auto;
   aspect-ratio: 16 / 10;
   object-fit: cover;
   object-position: top center;
