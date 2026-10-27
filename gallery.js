@@ -353,8 +353,13 @@
     var list = el('ol', 'scan-signals');
     var foot = el('div', 'scan-report-foot');
     var stamp = el('span');
+    var tools = el('span', 'scan-report-tools');
+    var again = el('button', 'scan-report-again', '再扫一次');
+    again.type = 'button';
+    tools.appendChild(again);
+    tools.appendChild(el('span', '', 'ESC 关闭'));
     foot.appendChild(stamp);
-    foot.appendChild(el('span', '', 'ESC 关闭'));
+    foot.appendChild(tools);
 
     report.appendChild(head);
     report.appendChild(title);
@@ -367,6 +372,13 @@
 
     close.addEventListener('click', closeScan);
     scrim.addEventListener('click', closeScan);
+    again.addEventListener('click', function () {
+      var trigger = scanState.trigger;
+      closeScan();
+      window.setTimeout(function () {
+        if (trigger && trigger.isConnected) openScan(trigger);
+      }, 140);
+    });
 
     scanUI = { scrim: scrim, report: report, close: close, title: title, sub: sub, list: list, stamp: stamp };
     return scanUI;
@@ -445,9 +457,9 @@
         ui.report.classList.add('is-open');
         ui.close.focus({ preventScroll: true });
         window.clearTimeout(scanState.autoTimer);
-        scanState.autoTimer = window.setTimeout(closeScan, 15000);
+        scanState.autoTimer = window.setTimeout(closeScan, 20000);
       },
-      prefersReduced() ? 0 : 1050
+      prefersReduced() ? 0 : 520
     );
   }
 

@@ -885,6 +885,34 @@
   text-transform: uppercase;
 }
 
+.scan-report-tools {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.scan-report-again {
+  padding: 6px 12px;
+  border: 1px solid var(--line-strong);
+  border-radius: 999px;
+  background: #fff;
+  color: var(--ink);
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: border-color 0.25s var(--ease), color 0.25s var(--ease),
+    background 0.25s var(--ease);
+}
+
+.scan-report-again:hover,
+.scan-report-again:focus-visible {
+  border-color: rgba(61, 90, 241, 0.42);
+  background: var(--surface-blue);
+  color: var(--blue-strong);
+}
+
 #guide .guide-item {
   scroll-margin-top: 96px;
 }
