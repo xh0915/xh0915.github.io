@@ -338,6 +338,7 @@
 
     var report = el('div', 'scan-report');
     report.setAttribute('role', 'dialog');
+    report.setAttribute('aria-modal', 'true');
     report.setAttribute('aria-labelledby', 'scan-report-title');
     report.setAttribute('aria-hidden', 'true');
 
@@ -361,7 +362,10 @@
     again.appendChild(icon('scan-report-again-icon', REFRESH));
     again.appendChild(document.createTextNode('再扫一次'));
     tools.appendChild(again);
-    tools.appendChild(el('span', '', 'ESC 关闭'));
+    var esc = el('span', 'scan-esc');
+    esc.appendChild(el('kbd', 'scan-kbd', 'ESC'));
+    esc.appendChild(document.createTextNode('关闭'));
+    tools.appendChild(esc);
     foot.appendChild(stamp);
     foot.appendChild(tools);
 
@@ -424,13 +428,10 @@
       'SWEEP ' + pad3(scanState.count) + ' · ' + pad(count) + (count === 1 ? ' SIGNAL' : ' SIGNALS');
   }
 
-  function paintScan(trigger) {
+  function paintScan(cx, cy) {
     var layer = el('div');
     layer.id = 'scan-layer';
     layer.setAttribute('aria-hidden', 'true');
-    var rect = trigger.getBoundingClientRect();
-    var cx = rect.left + rect.width / 2;
-    var cy = rect.top + rect.height / 2;
     layer.style.setProperty('--scan-x', cx + 'px');
     layer.style.setProperty('--scan-y', cy + 'px');
 
@@ -449,6 +450,7 @@
     stage.appendChild(el('span', 'scan-beam'));
     stage.appendChild(el('span', 'scan-core'));
 
+    var signals = signalsFromGuide();
     var base = (scanState.count % 4) * 16 - 24;
     var passes = [0.34, 0.64, 0.96, 1.3];
     var factors = [0.62, 0.86, 0.68, 0.46];
@@ -463,7 +465,11 @@
       halo.style.animationDelay = time + 's';
       blip.appendChild(halo);
       blip.appendChild(el('span', 'scan-blip-dot'));
-      blip.appendChild(el('span', 'scan-blip-label', 'S-' + pad(index + 1)));
+      var label = el('span', 'scan-blip-label');
+      label.appendChild(el('b', '', 'S-' + pad(index + 1)));
+      var name = signals[index] && signals[index].title ? signals[index].title : '信号 ' + pad(index + 1);
+      label.appendChild(el('span', '', name));
+      blip.appendChild(label);
       stage.appendChild(blip);
     });
 
@@ -483,11 +489,17 @@
 
     var ui = ensureScanUI();
     fillScanReport(ui);
-    if (!prefersReduced()) paintScan(trigger);
+    var rect = trigger.getBoundingClientRect();
+    var cx = rect.left + rect.width / 2;
+    var cy = rect.top + rect.height / 2;
+    ui.scrim.style.setProperty('--scan-x', cx + 'px');
+    ui.scrim.style.setProperty('--scan-y', cy + 'px');
+    if (!prefersReduced()) paintScan(cx, cy);
 
     window.clearTimeout(scanState.showTimer);
     scanState.showTimer = window.setTimeout(
       function () {
+        lockScroll();
         if ('inert' in ui.report) ui.report.inert = false;
         ui.report.setAttribute('aria-hidden', 'false');
         ui.scrim.classList.add('is-open');
@@ -500,10 +512,25 @@
     );
   }
 
+  function lockScroll() {
+    var root = document.documentElement;
+    var width = window.innerWidth - root.clientWidth;
+    root.style.setProperty('--scan-sbw', (width > 0 ? width : 0) + 'px');
+    root.classList.add('scan-lock');
+  }
+
+  function unlockScroll() {
+    var root = document.documentElement;
+    if (!root.classList.contains('scan-lock')) return;
+    root.classList.remove('scan-lock');
+    root.style.removeProperty('--scan-sbw');
+  }
+
   function closeScan() {
     window.clearTimeout(scanState.showTimer);
     window.clearTimeout(scanState.autoTimer);
     scanState.busy = false;
+    unlockScroll();
     if (!scanUI) return;
     scanUI.scrim.classList.remove('is-open');
     scanUI.report.classList.remove('is-open');
@@ -512,6 +539,25 @@
     var trigger = scanState.trigger;
     if (trigger && trigger.isConnected && typeof trigger.focus === 'function') {
       trigger.focus({ preventScroll: true });
+    }
+  }
+
+  function trapScanFocus(event) {
+    if (!scanUI || !scanUI.report.classList.contains('is-open')) return;
+    var focusables = scanUI.report.querySelectorAll('button, a[href], [tabindex]:not([tabindex="-1"])');
+    if (!focusables.length) return;
+    var first = focusables[0];
+    var last = focusables[focusables.length - 1];
+    var active = document.activeElement;
+    var inside = scanUI.report.contains(active);
+    if (event.shiftKey) {
+      if (!inside || active === first) {
+        event.preventDefault();
+        last.focus();
+      }
+    } else if (!inside || active === last) {
+      event.preventDefault();
+      first.focus();
     }
   }
 
@@ -566,7 +612,11 @@
     );
 
     document.addEventListener('keydown', function (event) {
-      if (event.key === 'Escape' && scanState.busy) closeScan();
+      if (event.key === 'Escape' && scanState.busy) {
+        closeScan();
+        return;
+      }
+      if (event.key === 'Tab') trapScanFocus(event);
     });
   }
 

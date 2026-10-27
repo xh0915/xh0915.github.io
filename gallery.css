@@ -648,6 +648,11 @@
 
 /* ---- sonar scan presentation (dock "扫描周围海域") ---- */
 
+html.scan-lock {
+  overflow: hidden;
+  padding-right: var(--scan-sbw, 0px);
+}
+
 #scan-layer {
   position: fixed;
   inset: 0;
@@ -716,6 +721,7 @@
   position: absolute;
   border: 1px dashed rgba(61, 90, 241, 0.15);
   border-radius: 50%;
+  animation: scan-grid-in 0.7s var(--ease) both;
 }
 
 #scan-layer .scan-grid--outer {
@@ -726,11 +732,24 @@
 
 #scan-layer .scan-grid--mid {
   inset: 18%;
+  animation-delay: 0.08s;
 }
 
 #scan-layer .scan-grid--inner {
   inset: 32%;
   border-color: rgba(61, 90, 241, 0.11);
+  animation-delay: 0.16s;
+}
+
+@keyframes scan-grid-in {
+  0% {
+    opacity: 0;
+    transform: scale(0.92);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
 }
 
 #scan-layer .scan-beam {
@@ -759,6 +778,19 @@
   width: 20px;
   height: 20px;
   margin: -10px 0 0 -10px;
+  opacity: 0;
+  animation: scan-core-in 0.5s var(--ease) 0.1s both;
+}
+
+@keyframes scan-core-in {
+  0% {
+    opacity: 0;
+    transform: scale(0.6);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
 }
 
 #scan-layer .scan-core::before,
@@ -813,14 +845,28 @@
 
 #scan-layer .scan-blip-label {
   position: absolute;
-  top: 12px;
+  top: 11px;
   left: 50%;
+  display: inline-flex;
+  align-items: baseline;
+  gap: 4px;
   transform: translateX(-50%);
-  color: rgba(39, 67, 216, 0.72);
-  font-family: var(--font-mono);
-  font-size: 8px;
-  letter-spacing: 0.14em;
   white-space: nowrap;
+}
+
+#scan-layer .scan-blip-label b {
+  color: rgba(61, 90, 241, 0.7);
+  font-family: var(--font-mono);
+  font-size: 7px;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+}
+
+#scan-layer .scan-blip-label span {
+  color: rgba(20, 42, 86, 0.72);
+  font-size: 9.5px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
 }
 
 @keyframes scan-veil {
@@ -924,12 +970,14 @@
   backdrop-filter: blur(7px);
   opacity: 0;
   pointer-events: none;
-  transition: opacity 0.45s var(--ease);
+  clip-path: circle(0% at var(--scan-x, 50%) var(--scan-y, 50%));
+  transition: opacity 0.45s var(--ease), clip-path 0.7s var(--ease);
 }
 
 #scan-scrim.is-open {
   opacity: 1;
   pointer-events: auto;
+  clip-path: circle(150% at var(--scan-x, 50%) var(--scan-y, 50%));
 }
 
 .scan-report {
@@ -998,6 +1046,40 @@
 
 .scan-report.is-open::before {
   opacity: 0.55;
+}
+
+.scan-report.is-open .scan-report-head,
+.scan-report.is-open > h3,
+.scan-report.is-open > .scan-report-sub,
+.scan-report.is-open .scan-report-foot {
+  animation: scan-rise 0.55s var(--ease) both;
+}
+
+.scan-report.is-open .scan-report-head {
+  animation-delay: 0.02s;
+}
+
+.scan-report.is-open > h3 {
+  animation-delay: 0.06s;
+}
+
+.scan-report.is-open > .scan-report-sub {
+  animation-delay: 0.1s;
+}
+
+.scan-report.is-open .scan-report-foot {
+  animation-delay: 0.18s;
+}
+
+@keyframes scan-rise {
+  0% {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .scan-report::after {
@@ -1262,6 +1344,24 @@
   gap: 10px;
 }
 
+.scan-esc {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.scan-kbd {
+  padding: 1px 5px;
+  border: 1px solid var(--line-strong);
+  border-radius: 4px;
+  background: #fff;
+  color: var(--faint);
+  font-family: var(--font-mono);
+  font-size: 8px;
+  letter-spacing: 0.08em;
+  line-height: 1.5;
+}
+
 .scan-report-again {
   display: inline-flex;
   align-items: center;
@@ -1322,6 +1422,10 @@
 }
 
 @media (max-width: 700px) {
+  #scan-layer .scan-disc {
+    width: min(84vmin, 440px);
+  }
+
   .scan-report {
     width: calc(100vw - 24px);
     max-height: 82vh;
@@ -1357,6 +1461,10 @@
   .scan-report::after,
   .scan-report.is-open .scan-signals li,
   .scan-report-kicker::before,
+  .scan-report.is-open .scan-report-head,
+  .scan-report.is-open > h3,
+  .scan-report.is-open > .scan-report-sub,
+  .scan-report.is-open .scan-report-foot,
   .scan-report.is-open .scan-report-foot::after {
     animation: none;
   }
