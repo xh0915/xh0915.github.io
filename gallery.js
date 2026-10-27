@@ -10,6 +10,8 @@
     '<svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2.5 4.5 6 8l3.5-3.5"/></svg>';
   var CROSS =
     '<svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><path d="M2.5 2.5l7 7M9.5 2.5l-7 7"/></svg>';
+  var REFRESH =
+    '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12.8 8a4.8 4.8 0 1 1-1.4-3.4"/><path d="M12.8 2.6v2.2h-2.2"/></svg>';
 
   var FALLBACK = {
     label: '作品图鉴',
@@ -354,8 +356,10 @@
     var foot = el('div', 'scan-report-foot');
     var stamp = el('span');
     var tools = el('span', 'scan-report-tools');
-    var again = el('button', 'scan-report-again', '再扫一次');
+    var again = el('button', 'scan-report-again');
     again.type = 'button';
+    again.appendChild(icon('scan-report-again-icon', REFRESH));
+    again.appendChild(document.createTextNode('再扫一次'));
     tools.appendChild(again);
     tools.appendChild(el('span', '', 'ESC 关闭'));
     foot.appendChild(stamp);
@@ -430,37 +434,45 @@
     layer.style.setProperty('--scan-x', cx + 'px');
     layer.style.setProperty('--scan-y', cy + 'px');
 
-    var sweep = el('span', 'scan-sweep');
-    sweep.style.left = cx + 'px';
-    sweep.style.top = cy + 'px';
-    layer.appendChild(sweep);
+    layer.appendChild(el('span', 'scan-veil'));
+    layer.appendChild(el('span', 'scan-contact'));
 
-    for (var i = 0; i < 4; i += 1) {
-      var ring = el('span', 'scan-ring');
-      ring.style.left = cx + 'px';
-      ring.style.top = cy + 'px';
-      ring.style.animationDelay = i * 0.18 + 's';
-      layer.appendChild(ring);
-    }
+    var disc = el('div', 'scan-disc');
+    disc.style.left = cx + 'px';
+    disc.style.top = cy + 'px';
+    var stage = el('div', 'scan-disc-stage');
+    stage.appendChild(el('span', 'scan-disc-fill'));
+    stage.appendChild(el('span', 'scan-disc-ticks'));
+    stage.appendChild(el('span', 'scan-grid scan-grid--outer'));
+    stage.appendChild(el('span', 'scan-grid scan-grid--mid'));
+    stage.appendChild(el('span', 'scan-grid scan-grid--inner'));
+    stage.appendChild(el('span', 'scan-beam'));
+    stage.appendChild(el('span', 'scan-core'));
 
-    var reach = Math.min(window.innerWidth, window.innerHeight);
-    var base = (scanState.count % 4) * 16 - 72;
-    var angles = [-56, -18, 26, 64];
-    var factors = [0.3, 0.46, 0.38, 0.54];
-    for (var b = 0; b < angles.length; b += 1) {
-      var rad = ((base + angles[b] - 90) * Math.PI) / 180;
-      var radius = Math.max(110, reach * factors[b]);
+    var base = (scanState.count % 4) * 16 - 24;
+    var passes = [0.34, 0.64, 0.96, 1.3];
+    var factors = [0.62, 0.86, 0.68, 0.46];
+    Array.prototype.forEach.call(passes, function (time, index) {
+      var deg = -24 + ((time - 0.06) / 1.9) * 360 + base;
+      var rad = ((deg - 90) * Math.PI) / 180;
       var blip = el('span', 'scan-blip');
-      blip.style.left = cx + Math.cos(rad) * radius + 'px';
-      blip.style.top = cy + Math.sin(rad) * radius + 'px';
-      blip.style.animationDelay = 0.3 + b * 0.15 + 's';
-      layer.appendChild(blip);
-    }
+      blip.style.left = 50 + Math.cos(rad) * factors[index] * 50 + '%';
+      blip.style.top = 50 + Math.sin(rad) * factors[index] * 50 + '%';
+      blip.style.animationDelay = time + 's';
+      var halo = el('span', 'scan-blip-halo');
+      halo.style.animationDelay = time + 's';
+      blip.appendChild(halo);
+      blip.appendChild(el('span', 'scan-blip-dot'));
+      blip.appendChild(el('span', 'scan-blip-label', 'S-' + pad(index + 1)));
+      stage.appendChild(blip);
+    });
 
+    disc.appendChild(stage);
+    layer.appendChild(disc);
     document.body.appendChild(layer);
     window.setTimeout(function () {
       if (layer.parentNode) layer.parentNode.removeChild(layer);
-    }, 3200);
+    }, 3400);
   }
 
   function openScan(trigger) {
@@ -484,7 +496,7 @@
         window.clearTimeout(scanState.autoTimer);
         scanState.autoTimer = window.setTimeout(closeScan, 20000);
       },
-      prefersReduced() ? 0 : 620
+      prefersReduced() ? 0 : 880
     );
   }
 
