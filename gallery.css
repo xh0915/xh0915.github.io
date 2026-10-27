@@ -1242,11 +1242,11 @@ html.scan-lock {
 
 .scan-signals button {
   display: grid;
-  grid-template-columns: 28px minmax(0, 1fr) 16px;
+  grid-template-columns: 28px 46px minmax(0, 1fr) 16px;
   align-items: center;
   gap: 12px;
   width: 100%;
-  padding: 11px 12px;
+  padding: 10px 12px;
   border: 0;
   border-radius: 14px;
   background: none;
@@ -1270,6 +1270,36 @@ html.scan-lock {
   font-variant-numeric: tabular-nums;
 }
 
+.scan-signal-thumb {
+  display: block;
+  width: 46px;
+  aspect-ratio: 16 / 10;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--surface-blue);
+  box-shadow: 0 10px 20px -18px rgba(23, 51, 112, 0.6);
+  transition: border-color 0.25s var(--ease), transform 0.25s var(--ease);
+}
+
+.scan-signal-thumb img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: top center;
+  transition: transform 0.35s var(--ease);
+}
+
+.scan-signals button:hover .scan-signal-thumb {
+  border-color: rgba(61, 90, 241, 0.35);
+  transform: translateY(-1px);
+}
+
+.scan-signals button:hover .scan-signal-thumb img {
+  transform: scale(1.04);
+}
+
 .scan-signal-title {
   display: block;
   color: var(--ink);
@@ -1281,11 +1311,14 @@ html.scan-lock {
 .scan-signal-meta {
   display: block;
   margin-top: 2px;
+  overflow: hidden;
   color: var(--faint);
   font-family: var(--font-mono);
   font-size: 9px;
   letter-spacing: 0.1em;
   text-transform: uppercase;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .scan-signal-arrow {
@@ -1437,6 +1470,16 @@ html.scan-lock {
 
   .scan-signals {
     padding-inline: 6px;
+  }
+
+  .scan-signals button {
+    grid-template-columns: 24px 38px minmax(0, 1fr) 16px;
+    gap: 10px;
+  }
+
+  .scan-signal-thumb {
+    width: 38px;
+    border-radius: 7px;
   }
 }
 

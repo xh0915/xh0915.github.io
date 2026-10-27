@@ -319,10 +319,12 @@
       .call(items, function (item) {
         var title = item.querySelector('.guide-summary-title');
         var en = item.querySelector('.guide-eyebrow');
+        var thumb = item.querySelector('.guide-thumb img') || item.querySelector('.guide-zoom-large img');
         return {
           slug: (item.id || '').replace(/^guide-/, ''),
           title: title ? title.textContent : '',
-          en: en ? en.textContent : ''
+          en: en ? en.textContent : '',
+          thumb: thumb ? thumb.currentSrc || thumb.src : ''
         };
       })
       .filter(function (signal) {
@@ -415,6 +417,15 @@
       button.type = 'button';
       button.setAttribute('data-scan-jump', signal.slug);
       button.appendChild(el('span', 'scan-signal-num', pad(index + 1)));
+      var frame = el('span', 'scan-signal-thumb');
+      if (signal.thumb) {
+        var img = document.createElement('img');
+        img.src = signal.thumb;
+        img.alt = '';
+        img.decoding = 'async';
+        frame.appendChild(img);
+      }
+      button.appendChild(frame);
       var text = el('span');
       text.appendChild(el('span', 'scan-signal-title', signal.title || signal.slug));
       if (signal.en) text.appendChild(el('span', 'scan-signal-meta', signal.en));
@@ -454,24 +465,24 @@
     var base = (scanState.count % 4) * 16 - 24;
     var passes = [0.34, 0.64, 0.96, 1.3];
     var factors = [0.62, 0.86, 0.68, 0.46];
-    Array.prototype.forEach.call(passes, function (time, index) {
-      var deg = -24 + ((time - 0.06) / 1.9) * 360 + base;
+    var total = Math.min(passes.length, signals.length);
+    for (var i = 0; i < total; i += 1) {
+      var deg = -24 + ((passes[i] - 0.06) / 1.9) * 360 + base;
       var rad = ((deg - 90) * Math.PI) / 180;
       var blip = el('span', 'scan-blip');
-      blip.style.left = 50 + Math.cos(rad) * factors[index] * 50 + '%';
-      blip.style.top = 50 + Math.sin(rad) * factors[index] * 50 + '%';
-      blip.style.animationDelay = time + 's';
+      blip.style.left = 50 + Math.cos(rad) * factors[i] * 50 + '%';
+      blip.style.top = 50 + Math.sin(rad) * factors[i] * 50 + '%';
+      blip.style.animationDelay = passes[i] + 's';
       var halo = el('span', 'scan-blip-halo');
-      halo.style.animationDelay = time + 's';
+      halo.style.animationDelay = passes[i] + 's';
       blip.appendChild(halo);
       blip.appendChild(el('span', 'scan-blip-dot'));
       var label = el('span', 'scan-blip-label');
-      label.appendChild(el('b', '', 'S-' + pad(index + 1)));
-      var name = signals[index] && signals[index].title ? signals[index].title : '信号 ' + pad(index + 1);
-      label.appendChild(el('span', '', name));
+      label.appendChild(el('b', '', 'S-' + pad(i + 1)));
+      label.appendChild(el('span', '', signals[i].title || '信号 ' + pad(i + 1)));
       blip.appendChild(label);
       stage.appendChild(blip);
-    });
+    }
 
     disc.appendChild(stage);
     layer.appendChild(disc);
